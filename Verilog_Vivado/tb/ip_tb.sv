@@ -155,13 +155,13 @@ begin
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h0, mtestProtectionType, 32'b1, mtestBresp); 
   for(int i = 0; i < 3220;i++) begin 
-  	mst_agent_0.AXI4LITE_WRITE_BURST(32'h4, mtestProtectionType, $urandom_range(-127, 127), mtestBresp);
+   mst_agent_0.AXI4LITE_WRITE_BURST(32'h4, mtestProtectionType, $urandom_range(0, 255), mtestBresp);
   end
   for(int i = 0; i < 10;i++) begin 
-  	mst_agent_0.AXI4LITE_WRITE_BURST(32'h8, mtestProtectionType, $urandom_range(-250, 250), mtestBresp);
+   mst_agent_0.AXI4LITE_WRITE_BURST(32'h8, mtestProtectionType, $urandom_range(0, 500), mtestBresp);
   end
   for(int i = 0; i < 784;i++) begin 
-  	mst_agent_0.AXI4LITE_WRITE_BURST(32'hc, mtestProtectionType, $urandom_range(0, 254), mtestBresp);
+   mst_agent_0.AXI4LITE_WRITE_BURST(32'hc, mtestProtectionType, $urandom_range(0, 255), mtestBresp);
   end
   while(1) begin
   mst_agent_0.AXI4LITE_READ_BURST(32'h14, mtestProtectionType, mtestRDataL, mtestBresp);
