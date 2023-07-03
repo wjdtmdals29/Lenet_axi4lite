@@ -1,11 +1,17 @@
-
+/*******************************************************************************
+#Author: Seungmin.Jeong(Graduated from Kwangwoon University, Seoul, Korea 2023.02)
+#Purpose: systemVerilog code for testbench
+#Revision History: 2023.07.03
+#Customizing code
+#Based on AXI VIP IP
+*******************************************************************************/
 `timescale 1ns / 1ps
-`include "mysimulationip_v1_0_tb_include.svh"
+`include "myip_v1_0_tb_include.svh"
 
 import axi_vip_pkg::*;
-import mysimulationip_v1_0_bfm_1_master_0_0_pkg::*;
+import myip_v1_0_bfm_1_master_0_0_pkg::*;
 
-module mysimulationip_v1_0_tb();
+module myip_v1_0_tb();
 
 
 xil_axi_uint                            error_cnt = 0;
@@ -105,7 +111,7 @@ axi_ready_gen                           awready_gen2;
 axi_ready_gen                           wready_gen2;  
 axi_ready_gen                           arready_gen2;  
 xil_axi_payload_byte                    data_mem[xil_axi_ulong];  
-mysimulationip_v1_0_bfm_1_master_0_0_mst_t          mst_agent_0;
+myip_v1_0_bfm_1_master_0_0_mst_t          mst_agent_0;
 
   `BD_WRAPPER DUT(
       .ARESETN(reset), 
@@ -126,6 +132,7 @@ initial begin
     reset <= 1'b1;
     repeat (5) @(negedge clock); 
   end
+  
   always #5 clock <= ~clock;
   initial begin
       S_AXI_TEST ( );
@@ -133,45 +140,48 @@ initial begin
       #1ns;
       $finish;
   end
-
-  /////////Open and scan data(weights, bias, Input feature map)/////////
+  localparam test_image = 10;
+  int n_test_image = 10;
   reg signed [31:0] weight [0:3219];
-  reg [16:0] cnt_weight;
+  reg [16:0] cnt_weight = 0;
   reg signed [31:0] bias [0:9];
-  reg [16:0] cnt_bias;
-  reg signed [31:0] fmap1 [0:783];
-  reg [16:0] cnt_fmap1;
-  integer file_weight;
-  integer file_weight_sc;
-  integer file_bias;
-  integer file_bias_sc;
-  integer file_fmap1;
-  integer file_fmap1_sc;
+  reg [16:0] cnt_bias = 0;
+  reg signed [31:0] fmap [0:783*test_image];
+  reg [31:0] cnt_fmap = 0;
+  reg [5:0] cnt_image = 0;
+  int n_cnt_image = 0;
+  integer file1;
+  integer file2;
+  integer file3;
+  integer file4;
+  integer file5;
+  integer file6;
   initial begin
-    file_weight=$fopen("HW_Weight.mem","r");
-    while (cnt_weight<3220) begin
-    file_weight_sc=$fscanf(file_weight,"%h",weight[cnt_weight]);
+    file1=$fopen("HW_Weight.mem","r");
+    while (cnt_weight<3200) begin
+    file2=$fscanf(file1,"%h",weight[cnt_weight]);
     cnt_weight = cnt_weight + 1;
     end
-    $fclose(file_weight);
-    file_bias=$fopen("HW_Bias.mem","r");
+    $fclose(file1);
+    file3=$fopen("HW_Bias.mem","r");
     while (cnt_bias<10) begin
-    file_bias_sc=$fscanf(file_bias,"%h",bias[cnt_bias]);
-    cnt_bias = cnt_bias - 1;
+    file4=$fscanf(file3,"%h",bias[cnt_bias]);
+    cnt_bias = cnt_bias + 1;
     end
-    $fclose(file_bias);
-    file_fmap1=$fopen("HW_test_num4_1.mem","r");
-    while (cnt_fmap1<784) begin
-    file_fmap1_sc=$fscanf(file_fmap1,"%h",fmap1[cnt_fmap1]);
-    cnt_fmap1 = cnt_fmap1 + 1;
+    $fclose(file3);
+    file5=$fopen("HW_test_num0to9.mem","r");
+    while (cnt_fmap<784*test_image) begin
+    file6=$fscanf(file5,"%h",fmap[cnt_fmap]);
+    cnt_fmap = cnt_fmap + 1;
     end
-    $fclose(file_fmap1);
+    $fclose(file5);
 end
-//////////////////////////////////////////////////////////////////////////////////////////
+    
+int hit;
 task automatic S_AXI_TEST;  
 begin   
 #1; 
-   $display("Sequential write transfers example similar to  AXI BFM WRITE_BURST method starts"); 
+   //$display("Sequential write transfers example similar to  AXI BFM WRITE_BURST method starts"); 
    mtestID = 0; 
    mtestADDR = 64'h00000000; 
    mtestBurstLength = 0; 
@@ -184,27 +194,33 @@ begin
    mtestQOS = 0; 
    result_slave = 1; 
   mtestWDataL[31:0] = 32'h00000001; 
-
-  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); /////////reset low
-  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b1, mtestBresp); /////////reset high : reset
-  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); /////////reset low
-  mst_agent_0.AXI4LITE_WRITE_BURST(32'h0, mtestProtectionType, 32'b1, mtestBresp); /////////ce
+  
+  for(n_cnt_image = 0; n_cnt_image < n_test_image; n_cnt_image = n_cnt_image+1) begin
+  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
+  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b1, mtestBresp); 
+  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
+  mst_agent_0.AXI4LITE_WRITE_BURST(32'h0, mtestProtectionType, 32'b1, mtestBresp); 
   for(int i = 0; i < 3220;i++) begin 
-  	mst_agent_0.AXI4LITE_WRITE_BURST(32'h4, mtestProtectionType, weight[i], mtestBresp); /////////write weight(convolution layer1_2, fclayer)
+  	mst_agent_0.AXI4LITE_WRITE_BURST(32'h4, mtestProtectionType, weight[i], mtestBresp);
   end
   for(int i = 0; i < 10;i++) begin 
-  	mst_agent_0.AXI4LITE_WRITE_BURST(32'h8, mtestProtectionType, bias[i], mtestBresp); /////////write bias(fclayer)
+  	mst_agent_0.AXI4LITE_WRITE_BURST(32'h8, mtestProtectionType, bias[i], mtestBresp);
   end
-  for(int i = 0; i < 784;i++) begin 
-  	mst_agent_0.AXI4LITE_WRITE_BURST(32'hc, mtestProtectionType, fmap1[i], mtestBresp); /////////write Input featuremap
+  for(int i = (784*n_cnt_image); i < 784*(1+n_cnt_image);i++) begin 
+  	mst_agent_0.AXI4LITE_WRITE_BURST(32'hc, mtestProtectionType, fmap[i], mtestBresp);
   end
   while(1) begin
-  mst_agent_0.AXI4LITE_READ_BURST(32'h14, mtestProtectionType, mtestRDataL, mtestBresp); /////////read 'end' signal of the inference result
+  mst_agent_0.AXI4LITE_READ_BURST(32'h14, mtestProtectionType, mtestRDataL, mtestBresp);
   if(mtestRDataL==1) begin
-    mst_agent_0.AXI4LITE_READ_BURST(32'h18, mtestProtectionType, mtestRDataResult, mtestBresp); /////////read inference result when the 'end' is HIGH
-    $finish;
+    mst_agent_0.AXI4LITE_READ_BURST(32'h18, mtestProtectionType, mtestRDataResult, mtestBresp);
+    $display("The %d inference result = %d\n",n_cnt_image, mtestRDataResult);
+    break;
   end
   end
+  mst_agent_0.AXI4LITE_WRITE_BURST(32'h0, mtestProtectionType, 32'b0, mtestBresp);
+  end
+  $finish;
+  
      $display("Sequential read transfers example similar to  AXI BFM READ_BURST method completes"); 
      $display("Sequential read transfers example similar to  AXI VIP READ_BURST method completes"); 
      $display("---------------------------------------------------------"); 
