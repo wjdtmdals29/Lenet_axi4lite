@@ -9,3 +9,25 @@
 4. Open 'XX_v1_0_tb.sv'
 5. Delete the existing code and copy and paste the code from Verilog_Vivado\tb\ip_tb.sv
 6. Run Simulation
+
+# AXI4 Lite I/F Address mapping
+0x00 : write clock enable
+0x04 : write data(weight)
+0x08 : write data(bias)
+0x0C : write data(feature map)
+0x10 : read 'en' signal(inference processing en)
+0x14 : read 'end' signal(inference processing en)
+0x18 : read data(inference result)
+0x1C : User reset_pos(0 to 1 : reset)
+
+# Process
+1. User reset
+2. Clock enable
+3. Write weight data(buffer_Weight)
+4. Write bias data(buffer_Bias)
+5. Write feature map data(SPBram)
+6. Start inference
+7. Read classification en, end, result
+8. DONE
+***More detail in Simulation***
+
