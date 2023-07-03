@@ -133,6 +133,41 @@ initial begin
       #1ns;
       $finish;
   end
+
+  /////////Open and scan data(weights, bias, Input feature map)/////////
+  reg signed [31:0] weight [0:3219];
+  reg [16:0] cnt_weight;
+  reg signed [31:0] bias [0:9];
+  reg [16:0] cnt_bias;
+  reg signed [31:0] fmap1 [0:783];
+  reg [16:0] cnt_fmap1;
+  integer file_weight;
+  integer file_weight_sc;
+  integer file_bias;
+  integer file_bias_sc;
+  integer file_fmap1;
+  integer file_fmap1_sc;
+  initial begin
+    file_weight=$fopen("HW_Weight.mem","r");
+    while (cnt_weight<3220) begin
+    file_weight_sc=$fscanf(file_weight,"%h",weight[cnt_weight]);
+    cnt_weight = cnt_weight + 1;
+    end
+    $fclose(file_weight);
+    file_bias=$fopen("HW_Bias.mem","r");
+    while (cnt_bias<10) begin
+    file_bias_sc=$fscanf(file_bias,"%h",bias[cnt_bias]);
+    cnt_bias = cnt_bias - 1;
+    end
+    $fclose(file_bias);
+    file_fmap1=$fopen("HW_test_num4_1.mem","r");
+    while (cnt_fmap1<784) begin
+    file_fmap1_sc=$fscanf(file_fmap1,"%h",fmap1[cnt_fmap1]);
+    cnt_fmap1 = cnt_fmap1 + 1;
+    end
+    $fclose(file_fmap1);
+end
+//////////////////////////////////////////////////////////////////////////////////////////
 task automatic S_AXI_TEST;  
 begin   
 #1; 
@@ -150,23 +185,23 @@ begin
    result_slave = 1; 
   mtestWDataL[31:0] = 32'h00000001; 
 
-  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
-  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b1, mtestBresp); 
-  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
-  mst_agent_0.AXI4LITE_WRITE_BURST(32'h0, mtestProtectionType, 32'b1, mtestBresp); 
+  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); /////////reset low
+  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b1, mtestBresp); /////////reset high : reset
+  mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); /////////reset low
+  mst_agent_0.AXI4LITE_WRITE_BURST(32'h0, mtestProtectionType, 32'b1, mtestBresp); /////////ce
   for(int i = 0; i < 3220;i++) begin 
-   mst_agent_0.AXI4LITE_WRITE_BURST(32'h4, mtestProtectionType, $urandom_range(0, 255), mtestBresp);
+  	mst_agent_0.AXI4LITE_WRITE_BURST(32'h4, mtestProtectionType, weight[i], mtestBresp); /////////write weight(convolution layer1_2, fclayer)
   end
   for(int i = 0; i < 10;i++) begin 
-   mst_agent_0.AXI4LITE_WRITE_BURST(32'h8, mtestProtectionType, $urandom_range(0, 500), mtestBresp);
+  	mst_agent_0.AXI4LITE_WRITE_BURST(32'h8, mtestProtectionType, bias[i], mtestBresp); /////////write bias(fclayer)
   end
   for(int i = 0; i < 784;i++) begin 
-   mst_agent_0.AXI4LITE_WRITE_BURST(32'hc, mtestProtectionType, $urandom_range(0, 255), mtestBresp);
+  	mst_agent_0.AXI4LITE_WRITE_BURST(32'hc, mtestProtectionType, fmap1[i], mtestBresp); /////////write Input featuremap
   end
   while(1) begin
-  mst_agent_0.AXI4LITE_READ_BURST(32'h14, mtestProtectionType, mtestRDataL, mtestBresp);
+  mst_agent_0.AXI4LITE_READ_BURST(32'h14, mtestProtectionType, mtestRDataL, mtestBresp); /////////read 'end' signal of the inference result
   if(mtestRDataL==1) begin
-    mst_agent_0.AXI4LITE_READ_BURST(32'h18, mtestProtectionType, mtestRDataResult, mtestBresp);
+    mst_agent_0.AXI4LITE_READ_BURST(32'h18, mtestProtectionType, mtestRDataResult, mtestBresp); /////////read inference result when the 'end' is HIGH
     $finish;
   end
   end
