@@ -12,6 +12,7 @@
 
 # AXI4 Lite I/F Address mapping
 0x00 : write clock enable
+
 0x04 : write data(weight)
 0x08 : write data(bias)
 0x0C : write data(feature map)
