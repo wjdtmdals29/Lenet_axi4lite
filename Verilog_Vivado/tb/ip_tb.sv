@@ -140,7 +140,9 @@ initial begin
       #1ns;
       $finish;
   end
- ////////////////////////*******////////////////////////
+  
+  ////////////////////////*******////////////////////////
+ ////////////////////////Customizing////////////////////////
   localparam test_image = 10;
   int n_test_image = 10;
   reg signed [31:0] weight [0:3219];
@@ -177,8 +179,8 @@ initial begin
     end
     $fclose(file5);
 end
-    
-int hit;
+ ////////////////////////*******////////////////////////
+  ////////////////////////*******////////////////////////
 task automatic S_AXI_TEST;  
 begin   
 #1; 
@@ -195,7 +197,10 @@ begin
    mtestQOS = 0; 
    result_slave = 1; 
   mtestWDataL[31:0] = 32'h00000001; 
+ 
   
+  ////////////////////////*******////////////////////////
+ ////////////////////////customizing////////////////////////
   for(n_cnt_image = 0; n_cnt_image < n_test_image; n_cnt_image = n_cnt_image+1) begin
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b1, mtestBresp); 
@@ -221,6 +226,8 @@ begin
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h0, mtestProtectionType, 32'b0, mtestBresp);
   end
   $finish;
+ ////////////////////////*******////////////////////////
+  ////////////////////////*******////////////////////////
   
      $display("Sequential read transfers example similar to  AXI BFM READ_BURST method completes"); 
      $display("Sequential read transfers example similar to  AXI VIP READ_BURST method completes"); 
