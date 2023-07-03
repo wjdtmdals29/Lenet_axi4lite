@@ -140,6 +140,7 @@ initial begin
       #1ns;
       $finish;
   end
+ ////////////////////////*******////////////////////////
   localparam test_image = 10;
   int n_test_image = 10;
   reg signed [31:0] weight [0:3219];
