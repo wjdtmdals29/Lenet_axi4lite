@@ -432,23 +432,6 @@
 			r_mem_fmap_write_hit <= mem_fmap_write_hit;
 		end
 	end
-	/*reg r_axi_wready;
-	always@(posedge clk or negedge reset_n) begin
-		if(!reset_n) begin
-			r_axi_wready <= 1'b0;
-		end
-		else begin
-			r_axi_wready <= axi_wready;
-		end
-	end
-	wire w_buffer_weight_we = mem_weight_write_hit && r_axi_wready;
-	wire w_buffer_bias_we = mem_bias_write_hit && r_axi_wready;
-	wire w_buffer_fmap_we = mem_fmap_write_hit && r_axi_wready;
-
-	assign o_weight_buffer_we = w_buffer_weight_we;
-	assign o_bias_buffer_we = w_buffer_bias_we;
-	assign o_fmap_buffer_we = w_buffer_fmap_we;
-*/	 
 	assign o_weight_buffer_we = r_mem_weight_write_hit;
 	assign o_bias_buffer_we = r_mem_bias_write_hit;
 	assign o_fmap_buffer_we = r_mem_fmap_write_hit;
