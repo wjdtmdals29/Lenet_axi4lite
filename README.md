@@ -36,5 +36,17 @@
 6. Start inference
 7. Read classification en, end, result
 8. DONE
-***More detail in Simulation***
+
+
+# Simulation Result
+Check the results of entering one data in order from the numbers 0 to 9.
+
+1. AXI4 lite Interface(Write and Read data)
+
+   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/6c00d81f-7f96-4ad3-9db9-d0b21f0741d1)
+
+    ****If want to see more detail, try simulation and check 'WRITE address & data', 'READ address & data(inference result)'.
+2. TCL console
+
+   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/464ada41-7193-41ff-8960-54e712a83ebe)
 
