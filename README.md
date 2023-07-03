@@ -14,11 +14,17 @@
 0x00 : write clock enable
 
 0x04 : write data(weight)
+
 0x08 : write data(bias)
+
 0x0C : write data(feature map)
+
 0x10 : read 'en' signal(inference processing en)
+
 0x14 : read 'end' signal(inference processing en)
+
 0x18 : read data(inference result)
+
 0x1C : User reset_pos(0 to 1 : reset)
 
 # Process
