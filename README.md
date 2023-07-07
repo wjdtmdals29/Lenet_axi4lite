@@ -69,7 +69,7 @@ Now check the results in FPGA.
 3. After proceeding with Bitstream, extract the .xsa file by 'Hardware export'.
 4. Run Vitis IDE and create a project.
 5. 'Stack size' and 'Heap size' are set to 200000.
-6. Add the file 'lenet_vitis.c' and then 'build' and then 'run hardware'. (File location : Vitis\)
+6. Add the file 'lenet_vitis.c' and then 'build' and then 'run hardware'. (File location : C_Vitis\)
 7. When you enter '1' in the Serial Terminal, it generates 1000 random data and then runs on SW and FPGA.
 8. It can be seen that both the result value of SW and the result value of FPGA are the same.
 
