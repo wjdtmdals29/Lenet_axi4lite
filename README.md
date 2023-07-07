@@ -58,7 +58,7 @@ Accuracy = 97.7%
 
 ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/0b220949-d6a9-4c6e-ac50-0458c80e7993)
 
-So, it may be confirmed that the algorithm of the C code written on the SW is normal.
+So, it confirmed that the algorithm of the C code is works normally.
 
 # Lenet in FPGA
 Now check the results in FPGA.
