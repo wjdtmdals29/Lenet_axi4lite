@@ -55,3 +55,24 @@ Test 1000 images.
 Accuracy = 97.7%
 
 ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/0b220949-d6a9-4c6e-ac50-0458c80e7993)
+
+So, it may be confirmed that the algorithm of the C code written on the SW is normal.
+
+# Lenet in FPGA
+Now check the results in FPGA.
+1. Create an IP block with Verilog codes in the "src" folder.
+2. Add 'zynq7 processing system ip' and 'top_lenet_axi4lite ip' . In this case, the clock frequency of the zynq is set to 50Mhz.
+
+   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/dba94c68-32f0-4703-8174-5b71a7d5957f)
+
+3. After proceeding with Bitstream, extract the .xsa file by 'Hardware export'.
+4. Run Vitis IDE and create a project.
+5. 'Stack size' and 'Heap size' are set to 200000.
+6. Add the file 'lenet_vitis.c' and then 'build' and then 'run hardware'.
+7. When you enter '1' in the Serial Terminal, it generates 1000 random data and then runs on SW and FPGA.
+8. It can be seen that both the result value of SW and the result value of FPGA are the same.
+
+   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/735df438-5f90-44e1-967f-1e5a65ffdf83)
+
+
+Therefore, it is possible to indirectly prove that the designed HW design operates normally.
