@@ -6,6 +6,7 @@
 #Based on AXI VIP IP
 *******************************************************************************/
 
+
 `timescale 1ns / 1ps
 `include "myip_v1_0_tb_include.svh"
 
@@ -170,7 +171,7 @@ initial begin
     cnt_bias = cnt_bias + 1;
     end
     $fclose(file3);
-    file5=$fopen("test_num_0to9.mem","r");
+    file5=$fopen("test_num_0to9_400.mem","r");
     while (cnt_fmap<784*test_image) begin
     file6=$fscanf(file5,"%h",fmap[cnt_fmap]);
     cnt_fmap = cnt_fmap + 1;
@@ -198,28 +199,27 @@ begin
   mtestWDataL[31:0] = 32'h00000001; 
   
   for(n_cnt_image = 0; n_cnt_image < n_test_image; n_cnt_image = n_cnt_image+1) begin
-  if(n_cnt_image==32'h0)
+  if(n_cnt_image == 0)
     real_number = 32'h0;
-  else if(n_cnt_image==32'h0)
-    real_number = 32'h0;
-  else if(n_cnt_image==32'h1)
+  else if(n_cnt_image==1)
     real_number = 32'h1;
-  else if(n_cnt_image==32'h2)
+  else if(n_cnt_image==2)
     real_number = 32'h2;
-  else if(n_cnt_image==32'h3)
-   real_number = 32'h3;
-  else if(n_cnt_image==32'h4)
+  else if(n_cnt_image==3)
+    real_number = 32'h3;
+  else if(n_cnt_image==4)
     real_number = 32'h4;
-  else if(n_cnt_image==32'h5)
+  else if(n_cnt_image==5)
     real_number = 32'h5;
-  else if(n_cnt_image==32'h6)
+  else if(n_cnt_image==6)
     real_number = 32'h6;
-  else if(n_cnt_image==32'h7)
+  else if(n_cnt_image==7)
     real_number = 32'h7;
-  else if(n_cnt_image==32'h8)
+  else if(n_cnt_image==8)
     real_number = 32'h8;
-  else if(n_cnt_image==32'h9)
+  else if(n_cnt_image==9)
     real_number = 32'h9;
+    
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b1, mtestBresp); 
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
