@@ -240,10 +240,10 @@ begin
     cnt_image <= cnt_image + 1;
     if(real_number != mtestRDataResult) begin
     error_count <= error_count+1;
-    $display("[%d]Mismatch !! Expected result = %d, actual result = %d",n_cnt_image,real_number[0], mtestRDataResult[0]);
+    $display("[%d]Mismatch !! Expected result = %d, actual result = %d",n_cnt_image,real_number[3:0], mtestRDataResult[3:0]);
     end
     else if (real_number == mtestRDataResult) begin
-    $display("[%d]Match !! Expected result = %d, actual result =  %d",n_cnt_image,real_number[0], mtestRDataResult[0]);
+    $display("[%d]Match !! Expected result = %d, actual result =  %d",n_cnt_image,real_number[3:0], mtestRDataResult[3:0]);
     end
     break;
   end
