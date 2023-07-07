@@ -25,7 +25,7 @@
 
 0x18 : read data(inference result)
 
-0x1C : User reset_pos(0 to 1 : reset)
+0x1C : User reset_pos(HIGH reset)
 
 # Process
 1. User reset
