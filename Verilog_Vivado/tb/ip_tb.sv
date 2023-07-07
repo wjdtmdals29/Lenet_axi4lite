@@ -5,6 +5,7 @@
 #Customizing code
 #Based on AXI VIP IP
 *******************************************************************************/
+
 `timescale 1ns / 1ps
 `include "myip_v1_0_tb_include.svh"
 
@@ -140,9 +141,6 @@ initial begin
       #1ns;
       $finish;
   end
-  
-  ////////////////////////*******////////////////////////
- ////////////////////////Customizing////////////////////////
   localparam test_image = 10;
   int n_test_image = 10;
   reg signed [31:0] weight [0:3219];
@@ -151,7 +149,7 @@ initial begin
   reg [16:0] cnt_bias = 0;
   reg signed [31:0] fmap [0:783*test_image];
   reg [31:0] cnt_fmap = 0;
-  reg [5:0] cnt_image = 0;
+  reg [31:0] cnt_image = 0;
   int n_cnt_image = 0;
   integer file1;
   integer file2;
@@ -172,15 +170,16 @@ initial begin
     cnt_bias = cnt_bias + 1;
     end
     $fclose(file3);
-    file5=$fopen("HW_test_num0to9.mem","r");
+    file5=$fopen("test_num_0to9.mem","r");
     while (cnt_fmap<784*test_image) begin
     file6=$fscanf(file5,"%h",fmap[cnt_fmap]);
     cnt_fmap = cnt_fmap + 1;
     end
     $fclose(file5);
 end
- ////////////////////////*******////////////////////////
-  ////////////////////////*******////////////////////////
+    
+reg [31:0] real_number;
+reg [10:0] error_count;
 task automatic S_AXI_TEST;  
 begin   
 #1; 
@@ -197,11 +196,30 @@ begin
    mtestQOS = 0; 
    result_slave = 1; 
   mtestWDataL[31:0] = 32'h00000001; 
- 
   
-  ////////////////////////*******////////////////////////
- ////////////////////////customizing////////////////////////
   for(n_cnt_image = 0; n_cnt_image < n_test_image; n_cnt_image = n_cnt_image+1) begin
+  if(n_cnt_image==32'h0)
+    real_number = 32'h0;
+  else if(n_cnt_image==32'h0)
+    real_number = 32'h0;
+  else if(n_cnt_image==32'h1)
+    real_number = 32'h1;
+  else if(n_cnt_image==32'h2)
+    real_number = 32'h2;
+  else if(n_cnt_image==32'h3)
+   real_number = 32'h3;
+  else if(n_cnt_image==32'h4)
+    real_number = 32'h4;
+  else if(n_cnt_image==32'h5)
+    real_number = 32'h5;
+  else if(n_cnt_image==32'h6)
+    real_number = 32'h6;
+  else if(n_cnt_image==32'h7)
+    real_number = 32'h7;
+  else if(n_cnt_image==32'h8)
+    real_number = 32'h8;
+  else if(n_cnt_image==32'h9)
+    real_number = 32'h9;
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b1, mtestBresp); 
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h1c, mtestProtectionType, 32'b0, mtestBresp); 
@@ -219,15 +237,21 @@ begin
   mst_agent_0.AXI4LITE_READ_BURST(32'h14, mtestProtectionType, mtestRDataL, mtestBresp);
   if(mtestRDataL==1) begin
     mst_agent_0.AXI4LITE_READ_BURST(32'h18, mtestProtectionType, mtestRDataResult, mtestBresp);
-    $display("The %d inference result = %d\n",n_cnt_image, mtestRDataResult);
+    cnt_image <= cnt_image + 1;
+    if(real_number != mtestRDataResult) begin
+    error_count <= error_count+1;
+    $display("[%d]Mismatch !! Expected result = %d, actual result = %d",n_cnt_image,real_number[0], mtestRDataResult[0]);
+    end
+    else if (real_number == mtestRDataResult) begin
+    $display("[%d]Match !! Expected result = %d, actual result =  %d",n_cnt_image,real_number[0], mtestRDataResult[0]);
+    end
     break;
   end
   end
   mst_agent_0.AXI4LITE_WRITE_BURST(32'h0, mtestProtectionType, 32'b0, mtestBresp);
   end
+  $display("DONE!! Accuracy = %d percent",((cnt_image-error_count)/n_test_image)*100);
   $finish;
- ////////////////////////*******////////////////////////
-  ////////////////////////*******////////////////////////
   
      $display("Sequential read transfers example similar to  AXI BFM READ_BURST method completes"); 
      $display("Sequential read transfers example similar to  AXI VIP READ_BURST method completes"); 
