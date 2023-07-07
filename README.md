@@ -1,6 +1,6 @@
 # Lenet_axi4lite
 # Lenet & AXI4-lite I/F IP block simulation method
-1. Generate ip (File location : Verilog_Vivado\src)
+1. Generate ip (File location : Verilog_Vivado\src\)
 2. Create new project -> Tools -> Create and package new ip -> Create AXI4 Peripheral -> Select 'Verify Peripheral IP using AXI4 VIP' in 'Create Peripheral' step -> Finish
 3. Delete basic IP and replace myip (1. Generate ip (File location : Verilog_Vivado\src)). And connect (M_AXI - s00_axi), (aclk - s00_axi_aclk), (aresetn - s00_axi_aresetn)
 
@@ -51,6 +51,7 @@ Check the results of entering one data in order from the numbers 0 to 9.
    ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/464ada41-7193-41ff-8960-54e712a83ebe)
 
 # Lenet in SW(C language)
+(File location : SW\)
 Test 1000 images.
 Accuracy = 97.7%
 
@@ -68,7 +69,7 @@ Now check the results in FPGA.
 3. After proceeding with Bitstream, extract the .xsa file by 'Hardware export'.
 4. Run Vitis IDE and create a project.
 5. 'Stack size' and 'Heap size' are set to 200000.
-6. Add the file 'lenet_vitis.c' and then 'build' and then 'run hardware'.
+6. Add the file 'lenet_vitis.c' and then 'build' and then 'run hardware'. (File location : Vitis\)
 7. When you enter '1' in the Serial Terminal, it generates 1000 random data and then runs on SW and FPGA.
 8. It can be seen that both the result value of SW and the result value of FPGA are the same.
 
