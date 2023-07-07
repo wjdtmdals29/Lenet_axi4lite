@@ -1,5 +1,5 @@
 # Lenet_axi4lite
-# Lenet & AXI4-lite I/F IP block simulation method
+# Lenet & AXI4-lite I/F IP block simulation method and real processing on FPGA board
 1. Generate ip (File location : Verilog_Vivado\src\)
 2. Create new project -> Tools -> Create and package new ip -> Create AXI4 Peripheral -> Select 'Verify Peripheral IP using AXI4 VIP' in 'Create Peripheral' step -> Finish
 3. Delete basic IP and replace myip (1. Generate ip (File location : Verilog_Vivado\src)). And connect (M_AXI - s00_axi), (aclk - s00_axi_aclk), (aresetn - s00_axi_aresetn)
