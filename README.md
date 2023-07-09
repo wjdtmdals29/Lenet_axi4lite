@@ -1,5 +1,17 @@
 # Lenet axi4-lite simulation and work on fpga board
-
+* Contents
+- H/W Simulation
+1. Lenet & AXI4-lite I/F IP block simulation
+2. AXI4 Lite I/F Address mapping
+3. Processing order
+4. Simulation Result
+- S/W Algorithm test
+1. Lenet on SW(C language)
+- Work test on FPGA(Zybo z7 20)
+1. Lenet on FPGA
+- Steps how get .xsa file and work in Vitis
+- Demo Video in Vitis
+- 
 # Lenet & AXI4-lite I/F IP block simulation
 1. Generate ip (File location : Verilog_Vivado\src\)
 2. Create new project -> Tools -> Create and package new ip -> Create AXI4 Peripheral -> Select 'Verify Peripheral IP using AXI4 VIP' in 'Create Peripheral' step -> Finish
@@ -28,7 +40,7 @@
 
 0x1C : User reset_pos(HIGH reset)
 
-# Process
+# Processing order
 1. User reset
 2. Clock enable
 3. Write weight data(buffer_Weight)
