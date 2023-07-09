@@ -10,7 +10,7 @@
 - Lenet on FPGA(Zybo z7 20)
 1. Steps how get .xsa file and work in Vitis
 2. Demo Video in Vitis
-- 
+
 # Lenet & AXI4-lite I/F IP block simulation
 1. Generate ip (File location : Verilog_Vivado\src\)
 2. Create new project -> Tools -> Create and package new ip -> Create AXI4 Peripheral -> Select 'Verify Peripheral IP using AXI4 VIP' in 'Create Peripheral' step -> Finish
