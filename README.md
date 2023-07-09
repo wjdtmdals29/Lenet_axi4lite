@@ -70,11 +70,16 @@ Now check the results in FPGA.
 3. After proceeding with Bitstream, extract the .xsa file by 'Hardware export'.
 4. Run Vitis IDE and create a project.
 5. 'Stack size' and 'Heap size' are set to 200000.
-6. Add the file 'lenet_vitis.c' and then 'build' and then 'run hardware'. (File location : C_Vitis\)
-7. When you enter '1' in the Serial Terminal, it generates 1000 random data and then runs on SW and FPGA.
-8. It can be seen that both the result value of SW and the result value of FPGA are the same.
+6. Add the file 'lenet_vitis.c','featuremap.h','weight_conv1.h','weight_conv2.h','weight_fc.h','bias.h' and then 'build' and then 'run hardware'. (File location : C_Vitis\)
 
-   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/735df438-5f90-44e1-967f-1e5a65ffdf83)
+   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/cf936365-15c8-4128-96a6-c4ef2be997f2)
 
+7. When you enter '1' in the Serial Terminal, a total of 1,000 image data, 100 from the numbers 0 to 9, are sequentially input, and weight and bias data are input.
+8. At the end of processe, the final result value can be found in the Serial Terminal.
 
-Therefore, it is possible to indirectly prove that the designed HW design operates normally.
+![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/1f2a208b-d7b3-4d53-8334-001741c92f5e)
+
+[SW] Accuracy = 97.70%                        [FPGA] Accuracy = 97.50%
+[SW] Average processing time = 17551.36 us    [FPGA] Average processing time = 99.63 us
+
+Therefore, it is possible to prove that the designed HW design operates normally.
