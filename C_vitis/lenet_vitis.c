@@ -10,6 +10,11 @@ Associated Filename: lenet_vitis.c
 #include "xil_io.h"
 #include "xil_exception.h"
 #include "xtime_l.h"
+#include "featuremap.h"
+#include "weight_conv1.h"
+#include "weight_conv2.h"
+#include "weight_fc.h"
+#include "bias.h"
 #include <stdlib.h>
 #include <time.h>
 #define max(x, y) (x) > (y) ? (x) : (y)
@@ -115,7 +120,7 @@ signed int out1[och1][ochsize1][ochsize1];
    signed int out2[och2][ochsize2][ochsize2];
    signed int out2_relu[och2][ochsize2][ochsize2];
    signed int out2_max[och2][(ochsize2) / 2][(ochsize2) / 2];
-  signed int fmap1[ich1][ichsize1][ichsize1];
+  signed int fmap1[NUM_TESTIMAGE][ich1][ichsize1][ichsize1];
   signed int fmap2[ich2][ichsize2][ichsize2];
   signed int weight1[ich1][och1][ksize][ksize];
   signed int weight2[ich2][och2][ksize][ksize];
@@ -125,11 +130,13 @@ signed int out1[och1][ochsize1][ochsize1];
   signed int out3[och3];
   signed int out3_relu[och3];
 
-  signed int fmap_HW[FMAP_SIZE];
+  signed int fmap_HW[NUM_TESTIMAGE][FMAP_SIZE];
   signed int weight_HW[WEIGHT_SIZE];
   signed int bias_HW[BIAS_SIZE];
-
+  int Expected_result = -1;
   int imagecount = 0;
+  int pixelcount = 0;
+  int weightcount = 0;
    unsigned int k = 0;
    unsigned int w = 0;
    int count_image = 0;
@@ -137,8 +144,8 @@ signed int out1[och1][ochsize1][ochsize1];
    double SW_stack_processing_time = 0;
    double FPGA_stack_processing_time = 0;
    double FPGA_stack_senddata_time = 0;
-   double mismatch_count = 0;
-   double match_count = 0;
+   double SW_match_count = 0;
+   double FPGA_match_count = 0;
    double ref_c_run_time = 0;
    double ref_v_run_time = 0;
    double ref_v_send_data_time = 0;
@@ -167,8 +174,9 @@ int main()
          case '1': // Show all registers
          srand(tStart);
          //print("***********reset SW*************\n");
-         mismatch_count = 0;
-         match_count = 0;
+
+         SW_match_count = 0;
+         FPGA_match_count = 0;
          testnum_count = 0;
          ref_c_run_time = 0;
          ref_v_run_time = 0;
@@ -176,14 +184,16 @@ int main()
          SW_stack_processing_time = 0;
          FPGA_stack_processing_time = 0;
          FPGA_stack_senddata_time = 0;
-         while(imagecount < NUM_TESTIMAGE){
+
+        for(int image = 0; image < NUM_TESTIMAGE; image = image + 1){
+            k = 0;
          for (i = 0; i < ich1; i++) {
             for (m = 0; m < ichsize1; m++) {
                for (n = 0; n < ichsize1; n++) {
-                    fmap1[i][m][n] = 0;
-                  fmap_HW[k] = 0;
+                  fmap1[image][i][m][n] = 0;
+                  fmap_HW[image][k] = 0;
                   k = k+1;
-               
+               }
             }
          }
          }
@@ -223,6 +233,74 @@ int main()
              bias_fc[i] = 0;
             bias_HW[i] = 0;
         }
+        for(int image = 0; image < NUM_TESTIMAGE; image = image + 1){
+        k = 0;
+      for (i = 0; i < ich1; i++) {
+            for (m = 0; m < ichsize1; m++) {
+               for (n = 0; n < ichsize1; n++) {
+                    fmap1[image][i][m][n] = feature_map[pixelcount];
+                  fmap_HW[image][k] = feature_map[pixelcount];
+                  pixelcount = pixelcount+1;
+                  k = k+1;
+               }
+            }
+         }
+      }
+      pixelcount = 0;
+         k = 0;
+         w = 0;
+         for (i = 0; i < ich1; i++) {
+            for (p = 0; p < och1; p++) {
+               for (m = 0; m < ksize; m++) {
+                  for (n = 0; n < ksize; n++) {
+                    //weight1[i][p][m][n] = rand()%254 - 127;
+                     //weight_HW[w] = weight2[i][p][m][n];
+                     weight1[i][p][m][n] = weight_conv1[weightcount];
+                     weight_HW[w] = weight_conv1[weightcount];
+                     weightcount = weightcount+1;
+                     w = w+1;
+                    }
+               }
+            }
+         }
+         weightcount = 0;
+         for (i = 0; i < ich2; i++) {
+            for (p = 0; p < och2; p++) {
+               for (m = 0; m < ksize; m++) {
+                  for (n = 0; n < ksize; n++) {
+                     //weight2[i][p][m][n] = rand()%254 - 127;
+                     //weight_HW[w] = weight2[i][p][m][n];
+                     weight2[i][p][m][n] = weight_conv2[weightcount];
+                     weight_HW[w] = weight_conv2[weightcount];
+                     weightcount = weightcount+1;
+                     w = w+1;
+                    }
+               }
+            }
+         }
+         weightcount = 0;
+         for (i = 0; i < och3; i++) {
+            for (p = 0; p < ich3; p++) {
+               //weight_fc[i][p] = rand()%254 - 127;
+               //weight_HW[w] = weight_fc[i][p];
+               weight_fc[i][p] = weight_fclayer[weightcount];
+               weight_HW[w] = weight_fclayer[weightcount];
+               weightcount = weightcount+1;
+               w = w+1;
+             }
+           }
+           weightcount = 0;
+         w = 0;
+           for (i = 0; i < och3; i++) {
+             bias_fc[i] = bias[i];
+            bias_HW[i] = bias[i];
+        }
+
+        ////////////////////////1000 Image Processing Strat////////////////////////
+         while(imagecount < NUM_TESTIMAGE){
+          if((imagecount % 100) == 0){
+          Expected_result = Expected_result + 1;
+          }
       for (i = 0; i < ich1; i++) {
          for (m = 0; m < ochsize1; m++) {
             for (n = 0; n < ochsize1; n++) {
@@ -285,52 +363,7 @@ int main()
            out3_relu[i] = 0;
       }
       result_SW = 0;
-      for (i = 0; i < ich1; i++) {
-            for (m = 0; m < ichsize1; m++) {
-               for (n = 0; n < ichsize1; n++) {
-                    fmap1[i][m][n] = rand()%256;
-                  fmap_HW[k] = fmap1[i][m][n];
-                  k = k+1;
-               
-            }
-         }
-      }
-         k = 0;
-         w = 0;
-         for (i = 0; i < ich1; i++) {
-            for (p = 0; p < och1; p++) {
-               for (m = 0; m < ksize; m++) {
-                  for (n = 0; n < ksize; n++) {
-                         weight1[i][p][m][n] = rand()%254 - 127;
-                     weight_HW[w] = weight1[i][p][m][n];
-                     w = w+1;
-                    }
-               }
-            }
-         }
-         for (i = 0; i < ich2; i++) {
-            for (p = 0; p < och2; p++) {
-               for (m = 0; m < ksize; m++) {
-                  for (n = 0; n < ksize; n++) {
-                     weight2[i][p][m][n] = rand()%254 - 127;
-                     weight_HW[w] = weight2[i][p][m][n];
-                     w = w+1;
-                    }
-               }
-            }
-         }
-         for (i = 0; i < och3; i++) {
-            for (p = 0; p < ich3; p++) {
-               weight_fc[i][p] = rand()%254 - 127;
-               weight_HW[w] = weight_fc[i][p];
-               w = w+1;
-             }
-           }
-         w = 0;
-           for (i = 0; i < och3; i++) {
-             bias_fc[i] = rand()%256 - 128;
-            bias_HW[i] = bias_fc[i];
-        }
+
 /////////////////// LENET Run in PS /////////////////////////////
             //printf("============[SW] LENET Run in PS(SW) .=============\n");
             XTime_GetTime(&tStart);
@@ -343,7 +376,7 @@ int main()
             for (p = 0; p < ksize; p++) {
                for (q = 0; q < ksize; q++) {
                   for (j = 0; j < och1; j++) {
-                     out1[j][m][n] += (fmap1[i][m + p][n + q] * weight1[i][j][p][q]);
+                     out1[j][m][n] += (fmap1[imagecount][i][m + p][n + q] * weight1[i][j][p][q]);
                   }
                }
             }
@@ -369,7 +402,7 @@ int main()
   for (i = 0; i < ich2; i = i + 1) {
       for (m = 0; m < ichsize2; m = m + 1) {
          for (n = 0; n < ichsize2; n = n + 1) {
-        for(b = 0; b < 4; b = b + 1) {
+        for(b = 0; b < 3; b = b + 1) {
           out1_max[i][m][n] = out1_max[i][m][n] - (out1_max[i][m][n]*0.5);
         }
         fmap2[i][m][n] = out1_max[i][m][n];
@@ -411,9 +444,9 @@ int main()
   for (i = 0; i < och2; i = i + 1) {
       for (m = 0; m < ichsize3; m = m + 1) {
          for (n = 0; n < ichsize3; n = n + 1) {
-        for(b = 0; b < bwtrunc2; b = b + 1) {
-          out2_max[i][m][n] = out2_max[i][m][n] - (out2_max[i][m][n]*0.5);
-        }
+        //for(b = 0; b < bwtrunc2; b = b + 1) {
+        //  out2_max[i][m][n] = out2_max[i][m][n] - (out2_max[i][m][n]*0.5);
+        //}
         fcmap[(i*ichsize3*ichsize3)+(m*ichsize3)+n] = out2_max[i][m][n];
       }
     }
@@ -426,9 +459,9 @@ int main()
   }
   for (i = 0; i < och3; i = i + 1){
     out3_relu[i] = relu(out3[i]);
-    for(b = 0; b < bwtruncfc; b = b + 1) {
-          out3_relu[i] = out3_relu[i] - (out3_relu[i]*0.5);
-        }
+    //for(b = 0; b < bwtruncfc; b = b + 1) {
+          //out3_relu[i] = out3_relu[i] - (out3_relu[i]*0.5);
+        //}
   }
   result_SW = Max_class(out3_relu[0],out3_relu[1],out3_relu[2],out3_relu[3],
   out3_relu[4],out3_relu[5],out3_relu[6],out3_relu[7],out3_relu[8],out3_relu[9]);
@@ -451,7 +484,7 @@ int main()
                Xil_Out32 ((XPAR_TOP_LENET_AXI4LITE_0_BASEADDR + LENET_BIAS_ADDR), bias_HW[i]);
             }
             for (i = 0; i < FMAP_SIZE; i++) {
-                 Xil_Out32 ((XPAR_TOP_LENET_AXI4LITE_0_BASEADDR + LENET_FMAP_ADDR), fmap_HW[i]);
+                 Xil_Out32 ((XPAR_TOP_LENET_AXI4LITE_0_BASEADDR + LENET_FMAP_ADDR), fmap_HW[imagecount][i]);
             }
             XTime_GetTime(&tStart);
             while(1) {
@@ -466,20 +499,32 @@ int main()
             ref_v_run_time = 1.0 * (tEnd - tStart) / (COUNTS_PER_SECOND/1000000);
             FPGA_stack_processing_time = FPGA_stack_processing_time + ref_v_run_time;
             
-            if(result_SW != result_FPGA) {
+            /*if(result_SW != result_FPGA) {
                mismatch_count = mismatch_count + 1;
             }
             else if (result_SW == result_FPGA){
                match_count = match_count + 1;
+            }*/
+            if(Expected_result == result_SW){
+              SW_match_count = SW_match_count + 1;
             }
+            if(Expected_result == result_FPGA){
+              FPGA_match_count = FPGA_match_count + 1;
+            }
+            printf("[%d Image Done]Expected result =  %d  [SW] result = %d [FPGA] result = %d [SW]Accuracy =  %.2f%%  [FPGA]Accuracy =  %.2f%%\n",
+            		imagecount,Expected_result,result_SW,result_FPGA,
+                   (SW_match_count/(imagecount+1))*100, (FPGA_match_count/(imagecount+1))*100);
             imagecount = imagecount+1;
+
          }
 
-         printf("Mismatch Count = %.f    Match count = %.f\n",mismatch_count,match_count);
-         printf("[SW] vs [FPGA] Accuracy ratio = %.2f%%\n", (match_count/NUM_TESTIMAGE)*100);
-         printf("Average [SW] processing time = %.2f us\n", (SW_stack_processing_time/NUM_TESTIMAGE));
-         printf("Average [FPGA] processing time = %.2f us\n", (FPGA_stack_processing_time/NUM_TESTIMAGE));
-         printf("Average [FPGA] speed faster %.2f times than SW\n", (SW_stack_processing_time/FPGA_stack_processing_time));
+         printf("[SW] Match Count = %.f    [FPGA] Mmatch count = %.f\n",SW_match_count,FPGA_match_count);
+         printf("[SW] Accuracy = %.2f%%    ", (SW_match_count/NUM_TESTIMAGE)*100);
+         printf("[FPGA] Accuracy = %.2f%%\n", (FPGA_match_count/NUM_TESTIMAGE)*100);
+
+         printf("[SW] Average processing time = %.2f us    ", (SW_stack_processing_time/NUM_TESTIMAGE));
+         printf("[FPGA] Average processing time = %.2f us\n", (FPGA_stack_processing_time/NUM_TESTIMAGE));
+         printf("[FPGA] speed faster %.2f times than [SW]\n", (SW_stack_processing_time/FPGA_stack_processing_time));
          break;
          case '2': // exit
             print ("exit \r\n");
