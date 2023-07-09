@@ -52,7 +52,7 @@ Check the results of entering one data in order from the numbers 0 to 9.
    ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/0ae38478-2d52-4e87-856b-40f1c8539d40)
 
 # Lenet in SW(C language)
-(File location : SW\)
+(File location : SW\lenet.c)
 Test 1000 images.
 Accuracy = 97.7%
 
