@@ -8,9 +8,9 @@
 - S/W Algorithm test
 1. Lenet on SW(C language)
 - Work test on FPGA(Zybo z7 20)
-1. Lenet on FPGA
-- Steps how get .xsa file and work in Vitis
-- Demo Video in Vitis
+- Lenet on FPGA
+1. Steps how get .xsa file and work in Vitis
+2. Demo Video in Vitis
 - 
 # Lenet & AXI4-lite I/F IP block simulation
 1. Generate ip (File location : Verilog_Vivado\src\)
