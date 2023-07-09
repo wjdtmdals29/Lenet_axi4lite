@@ -82,4 +82,6 @@ Now check the results in FPGA.
 * [SW] Accuracy = 97.70%          [SW] Average processing time = 17551.36 us                
 * [FPGA] Accuracy = 97.50%        [FPGA] Average processing time = 99.63 us
 
-Therefore, it is possible to prove that the designed HW design operates normally.
+# Demo on Vitis Video
+
+https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/5ef33e5a-608d-4340-a574-76ef4ca45eb0
