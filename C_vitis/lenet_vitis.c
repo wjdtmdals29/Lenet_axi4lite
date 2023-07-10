@@ -20,7 +20,7 @@ Associated Filename: lenet_vitis.c
 #define max(x, y) (x) > (y) ? (x) : (y)
 
 #define ksize 5
-#define NUM_TESTIMAGE 1000
+#define NUM_TESTIMAGE 10000
 #define ich1 1
 #define och1 4
 #define ichsize1 28
@@ -298,7 +298,7 @@ int main()
 
         ////////////////////////1000 Image Processing Strat////////////////////////
          while(imagecount < NUM_TESTIMAGE){
-          if((imagecount % 100) == 0){
+          if((imagecount % 1000) == 0){
           Expected_result = Expected_result + 1;
           }
       for (i = 0; i < ich1; i++) {
