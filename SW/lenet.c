@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 #define max(x, y) (x) > (y) ? (x) : (y)
-#define TestImage 1000
+#define TestImage 10000
 #define ksize 5
 
 #define ich1 1
@@ -134,8 +134,8 @@ int main()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////Real values////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//<num0>100images,<num1>100images,<num2>100images,<num3>100images,<num4>100images,<num5>100images,<num6>100images,<num7>100images,<num8>100images,<num9>100images
-fp_fmap = fopen("test_num_0to9_1000.txt", "r"); 
+//<num0>1000images,<num1>1000images,<num2>1000images,<num3>1000images,<num4>1000images,<num5>1000images,<num6>1000images,<num7>1000images,<num8>1000images,<num9>1000images
+fp_fmap = fopen("test_num_0to9_10000.txt", "r"); 
 for(testimagenum = 0; testimagenum < TestImage; testimagenum = testimagenum+1){
 	for (i = 0; i < ich1; i++) {
 		for (m = 0; m < ichsize1; m++) {
@@ -253,7 +253,7 @@ fp_weight2 = fopen("SW_conv2_weight.txt", "r");
 
   /////////////////////if 0<=count_img <100, Expected result = 0/////////////////////
   /////////////////////if 700<=count_img <800, Expected result = 7/////////////////////
-    if((count_img % 100) == 0){
+    if((count_img % 1000) == 0){
     Expected_result = Expected_result + 1;
   }
 	for (i = 0; i < ich1; i++) {
