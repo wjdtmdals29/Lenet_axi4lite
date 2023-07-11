@@ -93,7 +93,7 @@ So, it confirmed that the algorithm of the C code is works normally.
 
 # Lenet in FPGA
 Test 10000 images in FPGA.
-1. Create an IP block with Verilog codes in the "src" folder.
+1. Create an IP block with Verilog codes in the "Verilog_Vivado\src".
 2. Add 'zynq7 processing system ip' and 'top_lenet_axi4lite ip' . In this case, the clock frequency of the zynq is set to 50Mhz.
 
 ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/dba94c68-32f0-4703-8174-5b71a7d5957f)
