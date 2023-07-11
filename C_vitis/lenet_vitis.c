@@ -174,7 +174,7 @@ int main()
          case '1': // Show all registers
          srand(tStart);
          //print("***********reset SW*************\n");
-
+         
          SW_match_count = 0;
          FPGA_match_count = 0;
          testnum_count = 0;
@@ -296,7 +296,7 @@ int main()
             bias_HW[i] = bias[i];
         }
 
-        ////////////////////////1000 Image Processing Strat////////////////////////
+        ////////////////////////10000 Image Processing Strat////////////////////////
          while(imagecount < NUM_TESTIMAGE){
           if((imagecount % 1000) == 0){
           Expected_result = Expected_result + 1;
@@ -363,7 +363,7 @@ int main()
            out3_relu[i] = 0;
       }
       result_SW = 0;
-
+      
 /////////////////// LENET Run in PS /////////////////////////////
             //printf("============[SW] LENET Run in PS(SW) .=============\n");
             XTime_GetTime(&tStart);
@@ -444,9 +444,6 @@ int main()
   for (i = 0; i < och2; i = i + 1) {
       for (m = 0; m < ichsize3; m = m + 1) {
          for (n = 0; n < ichsize3; n = n + 1) {
-        //for(b = 0; b < bwtrunc2; b = b + 1) {
-        //  out2_max[i][m][n] = out2_max[i][m][n] - (out2_max[i][m][n]*0.5);
-        //}
         fcmap[(i*ichsize3*ichsize3)+(m*ichsize3)+n] = out2_max[i][m][n];
       }
     }
@@ -459,9 +456,6 @@ int main()
   }
   for (i = 0; i < och3; i = i + 1){
     out3_relu[i] = relu(out3[i]);
-    //for(b = 0; b < bwtruncfc; b = b + 1) {
-          //out3_relu[i] = out3_relu[i] - (out3_relu[i]*0.5);
-        //}
   }
   result_SW = Max_class(out3_relu[0],out3_relu[1],out3_relu[2],out3_relu[3],
   out3_relu[4],out3_relu[5],out3_relu[6],out3_relu[7],out3_relu[8],out3_relu[9]);
@@ -499,29 +493,20 @@ int main()
             ref_v_run_time = 1.0 * (tEnd - tStart) / (COUNTS_PER_SECOND/1000000);
             FPGA_stack_processing_time = FPGA_stack_processing_time + ref_v_run_time;
             
-            /*if(result_SW != result_FPGA) {
-               mismatch_count = mismatch_count + 1;
-            }
-            else if (result_SW == result_FPGA){
-               match_count = match_count + 1;
-            }*/
             if(Expected_result == result_SW){
               SW_match_count = SW_match_count + 1;
             }
             if(Expected_result == result_FPGA){
               FPGA_match_count = FPGA_match_count + 1;
             }
-            printf("[%d Image Done]Expected result =  %d  [SW] result = %d [FPGA] result = %d [SW]Accuracy =  %.2f%%  [FPGA]Accuracy =  %.2f%%\n",
-            		imagecount,Expected_result,result_SW,result_FPGA,
+            printf("[%d Image Done] [SW]Accuracy =  %.2f%%  [FPGA]Accuracy =  %.2f%%\n",imagecount,
                    (SW_match_count/(imagecount+1))*100, (FPGA_match_count/(imagecount+1))*100);
             imagecount = imagecount+1;
-
          }
-
-         printf("[SW] Match Count = %.f    [FPGA] Mmatch count = %.f\n",SW_match_count,FPGA_match_count);
+         printf("[SW] Match Count = %.f    [FPGA] Match count = %.f\n",SW_match_count,FPGA_match_count);
          printf("[SW] Accuracy = %.2f%%    ", (SW_match_count/NUM_TESTIMAGE)*100);
          printf("[FPGA] Accuracy = %.2f%%\n", (FPGA_match_count/NUM_TESTIMAGE)*100);
-
+         
          printf("[SW] Average processing time = %.2f us    ", (SW_stack_processing_time/NUM_TESTIMAGE));
          printf("[FPGA] Average processing time = %.2f us\n", (FPGA_stack_processing_time/NUM_TESTIMAGE));
          printf("[FPGA] speed faster %.2f times than [SW]\n", (SW_stack_processing_time/FPGA_stack_processing_time));
