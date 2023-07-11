@@ -60,12 +60,12 @@ Check the results of entering one data in order from the numbers 0 to 9.
 
 1. AXI4 lite Interface(Write and Read data)
 
-   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/6c00d81f-7f96-4ad3-9db9-d0b21f0741d1)
+![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/6c00d81f-7f96-4ad3-9db9-d0b21f0741d1)
 
     ****If want to see more detail, try simulation and check 'WRITE address & data', 'READ address & data(inference result)'.
 2. TCL console
 
-   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/0ae38478-2d52-4e87-856b-40f1c8539d40)
+![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/0ae38478-2d52-4e87-856b-40f1c8539d40)
 
 # S/W Algorithm test 
 * Lenet in SW(C language)
@@ -96,14 +96,14 @@ Test 10000 images in FPGA.
 1. Create an IP block with Verilog codes in the "src" folder.
 2. Add 'zynq7 processing system ip' and 'top_lenet_axi4lite ip' . In this case, the clock frequency of the zynq is set to 50Mhz.
 
-   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/dba94c68-32f0-4703-8174-5b71a7d5957f)
+![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/dba94c68-32f0-4703-8174-5b71a7d5957f)
 
 3. After proceeding with Bitstream, extract the .xsa file by 'Hardware export'.
 4. Run Vitis IDE and create a project.
 5. 'Stack size' and 'Heap size' are set to 0x4000000.
 6. Add the file (File location : C_Vitis\) 'lenet_vitis.c','featuremap.h','weight_conv1.h','weight_conv2.h','weight_fc.h','bias.h' and then 'build' and then 'run hardware'. 
 
-   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/cf936365-15c8-4128-96a6-c4ef2be997f2)
+![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/f69c8e1b-68cf-4427-8cb8-65bde836023f)
 
 8. When you enter '1' in the Serial Terminal, a total of 10,000 image data, 1000 from the numbers 0 to 9, are sequentially input, and weight and bias data are input.
 9. At the end of processe, the final result value can be found in the Serial Terminal.
