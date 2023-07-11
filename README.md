@@ -85,11 +85,6 @@ Test 10000 images in FPGA.
 6. Add the file 'lenet_vitis.c','featuremap.h','weight_conv1.h','weight_conv2.h','weight_fc.h','bias.h' and then 'build' and then 'run hardware'. (File location : C_Vitis\)
 
    ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/cf936365-15c8-4128-96a6-c4ef2be997f2)
-   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/89c67241-4c16-47a6-8d35-bb479bf9a1f3)
-   Build
-   ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/eb99c90d-5d5e-4938-8d1b-9d742878ed60)
-   Run as hardware
-
 
 8. When you enter '1' in the Serial Terminal, a total of 10,000 image data, 1000 from the numbers 0 to 9, are sequentially input, and weight and bias data are input.
 9. At the end of processe, the final result value can be found in the Serial Terminal.
