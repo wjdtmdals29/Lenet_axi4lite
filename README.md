@@ -101,7 +101,7 @@ Test 10000 images in FPGA.
 3. After proceeding with Bitstream, extract the .xsa file by 'Hardware export'.
 4. Run Vitis IDE and create a project.
 5. 'Stack size' and 'Heap size' are set to 0x4000000.
-6. Add the file (File location : C_Vitis\) 'lenet_vitis.c','featuremap.h','weight_conv1.h','weight_conv2.h','weight_fc.h','bias.h' and then 'build' and then 'run hardware'. 
+6. Add files located "C_vitis" and then 'build' and then 'run hardware'. 
 
 ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/f69c8e1b-68cf-4427-8cb8-65bde836023f)
 
