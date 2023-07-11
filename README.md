@@ -106,9 +106,9 @@ Test 10000 images in FPGA.
 ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/f69c8e1b-68cf-4427-8cb8-65bde836023f)
 
 8. When you enter '1' in the Serial Terminal, a total of 10,000 image data, 1000 from the numbers 0 to 9, are sequentially input, and weight and bias data are input.
-9. At the end of processe, the final result value can be found in the Serial Terminal.
+9. At the end of processe, the final result can be found in the Serial Terminal.
 
-![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/6ae1ca70-ad73-4da5-89a7-45e7468de6ed)
+![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/57428c9b-ed68-469b-9cf5-911f8d81b591)
 
 
 * [SW] Accuracy = 98.19%          [SW] Average processing time = 17552 us                
