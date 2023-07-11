@@ -82,7 +82,7 @@ Test 10000 images in FPGA.
 3. After proceeding with Bitstream, extract the .xsa file by 'Hardware export'.
 4. Run Vitis IDE and create a project.
 5. 'Stack size' and 'Heap size' are set to 0x4000000.
-6. Add the file 'lenet_vitis.c','featuremap.h','weight_conv1.h','weight_conv2.h','weight_fc.h','bias.h' and then 'build' and then 'run hardware'. (File location : C_Vitis\)
+6. Add the file (File location : C_Vitis\) 'lenet_vitis.c','featuremap.h','weight_conv1.h','weight_conv2.h','weight_fc.h','bias.h' and then 'build' and then 'run hardware'. 
 
    ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/cf936365-15c8-4128-96a6-c4ef2be997f2)
 
@@ -96,6 +96,9 @@ Test 10000 images in FPGA.
 * [FPGA] Accuracy = 97.99%        [FPGA] Average processing time = 99.51 us
 
 # Demo Video in Vitis 
-https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/a092c46f-075f-4ecb-90e9-ab73d25200ba
+
+https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/08727345-8ffc-45bd-9042-def2cd10cb8c
+
+
 
 
