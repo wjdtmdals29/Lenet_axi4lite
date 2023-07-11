@@ -92,7 +92,7 @@ Test 10000 images in FPGA.
 ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/6ae1ca70-ad73-4da5-89a7-45e7468de6ed)
 
 
-* [SW] Accuracy = 98.19%          [SW] Average processing time = 17551.63 us                
+* [SW] Accuracy = 98.19%          [SW] Average processing time = 17552 us                
 * [FPGA] Accuracy = 97.99%        [FPGA] Average processing time = 99.51 us
 
 # Demo Video in Vitis 
