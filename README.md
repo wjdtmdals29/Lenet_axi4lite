@@ -78,11 +78,7 @@ Accuracy = 98.19%
 So, it confirmed that the algorithm of the C code is works normally.
 
 # Implementaion result
-**[NOTE]You can synthesis and implementation at clock speed 70Mhz and it is possible. But in this time, i set up the speed at 50Mhz.
-And if set up 70 Mhz, then the result is here.
-
-![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/d1591a99-bbc0-4e9d-beed-7ed77515454e)
-
+I run this model frequency of clock at 50Mhz.
 
 * Timing Summary
 
@@ -124,6 +120,10 @@ Test 10000 images in FPGA.
 
 https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/08727345-8ffc-45bd-9042-def2cd10cb8c
 
+# [NOTE]
+* You can synthesis and implementation at clock speed 70Mhz and it is possible. But in this time, i set up the speed at 50Mhz.
+* The result when i set up clock frquency at 70Mhz is here.
 
+![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/d1591a99-bbc0-4e9d-beed-7ed77515454e)
 
 
