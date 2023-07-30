@@ -307,15 +307,15 @@ int main()
 		      for (m = 0; m < ochsize1; m = m + 2) {
 		      	for (n = 0; n < ochsize1; n = n + 2) {
 		      		out1_max[j][m / 2][n / 2] = 0;
-              fmap2[j][m / 2][n / 2] = 0;
+		      		fmap2[j][m / 2][n / 2] = 0;
 			      }
 		      }
 	      }
 		      for (m = 0; m < ochsize2; m++) {
 			      for (n = 0; n < ochsize2; n++) {
-			      			for (j = 0; j < och2; j++) {
-			      				out2[j][m][n] = 0;
-                    out2_relu[j][m][n] = 0;
+			      		for (j = 0; j < och2; j++) {
+			      			out2[j][m][n] = 0;
+			      			out2_relu[j][m][n] = 0;
 			      }
 		      }
 	      }
@@ -335,7 +335,6 @@ int main()
         }
         for (i = 0; i < och3; i = i + 1){
             out3[i] = 0;
-            bias_fc[i] = 0;
             out3_relu[i] = 0;
         }
             result_SW = 0;
@@ -343,72 +342,66 @@ int main()
 /////////////////// LENET Run in PS /////////////////////////////
             //printf("============[SW] LENET Run in PS(SW) .=============\n");
             XTime_GetTime(&tStart);
-   for (i = 0; i < ich1; i++) {
-      for (m = 0; m < ochsize1; m++) {
-         for (n = 0; n < ochsize1; n++) {
-            for (p = 0; p < ksize; p++) {
-               for (q = 0; q < ksize; q++) {
-                  for (j = 0; j < och1; j++) {
-                     out1[j][m][n] += (fmap1[imagecount][i][m + p][n + q] * weight1[i][j][p][q]); //Convolution
-                     out1_relu[j][m][n] = relu(out1[j][m][n]); //Relu function
+            for (i = 0; i < ich1; i++) {
+                  for (m = 0; m < ochsize1; m++) {
+                     for (n = 0; n < ochsize1; n++) {
+                        for (p = 0; p < ksize; p++) {
+                           for (q = 0; q < ksize; q++) {
+                              for (j = 0; j < och1; j++) {
+                                 out1[j][m][n] += (fmap1[imagecount][i][m + p][n + q] * weight1[i][j][p][q]);
+                                 out1_relu[j][m][n] = relu(out1[j][m][n]);
+                              }
+                           }
+                        }
+                     }
                   }
                }
-            }
-         }
-      }
-   }
-   /////////////////////  maxpooler  /////////////////////
-   for (j = 0; j < och1; j++) {
-      for (m = 0; m < ochsize1; m = m + 2) {
-         for (n = 0; n < ochsize1; n = n + 2) {
-          //maxpool
-            out1_max[j][m / 2][n / 2] = Max(out1_relu[j][m][n], out1_relu[j][m][n + 1], out1_relu[j][m + 1][n], out1_relu[j][m + 1][n + 1]);
-            fmap2[i][m][n] = out1_max[j][m / 2][n / 2];
-         }
-      }
-   }
-   ////////////////////////////////////////////////////////////////////////////////////
-   ///////////////////////////  Strat convolution layer 2  ////////////////////////////
-   ////////////////////////////////////////////////////////////////////////////////////
-   for (i = 0; i < ich2; i++) {
-      for (m = 0; m < ochsize2; m++) {
-         for (n = 0; n < ochsize2; n++) {
-            for (p = 0; p < ksize; p++) {
-               for (q = 0; q < ksize; q++) {
-                  for (j = 0; j < och2; j++) {
-                     out2[j][m][n] += (fmap2[i][m + p][n + q] * weight2[i][j][p][q]); //Convolution
-                     out2_relu[j][m][n] = relu(out2[j][m][n]); //Relu function
+               for (j = 0; j < och1; j++) {
+                  for (m = 0; m < ochsize1; m = m + 2) {
+                     for (n = 0; n < ochsize1; n = n + 2) {
+                        out1_max[j][m / 2][n / 2] = Max(out1_relu[j][m][n], out1_relu[j][m][n + 1], out1_relu[j][m + 1][n], out1_relu[j][m + 1][n + 1]);
+                        for(b = 0; b < 3; b = b + 1) {
+                           out1_max[j][m / 2][n / 2] = out1_max[j][m / 2][n / 2] - (out1_max[j][m / 2][n / 2]*0.5);
+                        }
+                        fmap2[j][m / 2][n / 2] = out1_max[j][m / 2][n / 2];
+                     }
                   }
                }
-            }
-         }
-      }
-   }
-   /////////////////////  maxpooler  /////////////////////
-  for (j = 0; j < och2; j++) {
-     for (m = 0; m < ochsize2; m = m + 2) {
-        for (n = 0; n < ochsize2; n = n + 2) {
-           out2_max[j][m / 2][n / 2] = Max(out2_relu[j][m][n], out2_relu[j][m][n + 1], out2_relu[j][m + 1][n], out2_relu[j][m + 1][n + 1]);
-        //truncate **I don't resolve this problem. If i don't truncate 3bits, then the result return error value** Please solve this
-          for(b = 0; b < 3; b = b + 1) {
-            out2_max[j][m / 2][n / 2] = out2_max[j][m / 2][n / 2] - (out2_max[j][m / 2][n / 2]*0.5);
-          }
-        /////////////
-          fcmap[(j*ichsize3*ichsize3)+((m / 2)*ichsize3)+(n / 2)] = out2_max[j][m / 2][n / 2];
-          }
-        }
-     }
-
-  ////////////////////////////////////////////////////////////////////////////////////
-   ///////////////////////////  Strat Fully Connected layer  ////////////////////////////
-   ////////////////////////////////////////////////////////////////////////////////////
-  for (i = 0; i < och3; i = i + 1){
-    for (m = 0; m < ich3; m = m + 1) {
-      out3[i] = out3[i] + (fcmap[m]*weight_fc[i][m]);
-    }
-    out3[i] = out3[i] + bias_fc[i];
-    out3_relu[i] = relu(out3[i]);
-  }
+               ////////////////////////////////////////////////////////////////////////////////////
+               ///////////////////////////  Strat convolution layer 2  ////////////////////////////
+               ////////////////////////////////////////////////////////////////////////////////////
+               for (i = 0; i < ich2; i++) {
+                  for (m = 0; m < ochsize2; m++) {
+                     for (n = 0; n < ochsize2; n++) {
+                        for (p = 0; p < ksize; p++) {
+                           for (q = 0; q < ksize; q++) {
+                              for (j = 0; j < och2; j++) {
+                                 out2[j][m][n] += (fmap2[i][m + p][n + q] * weight2[i][j][p][q]);
+                                 out2_relu[j][m][n] = relu(out2[j][m][n]);
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+              for (j = 0; j < och2; j++) {
+                 for (m = 0; m < ochsize2; m = m + 2) {
+                    for (n = 0; n < ochsize2; n = n + 2) {
+                       out2_max[j][m / 2][n / 2] = Max(out2_relu[j][m][n], out2_relu[j][m][n + 1], out2_relu[j][m + 1][n], out2_relu[j][m + 1][n + 1]);
+                       fcmap[(j*ichsize3*ichsize3)+((m / 2)*ichsize3)+(n / 2)] = out2_max[j][m / 2][n / 2];
+                    }
+                 }
+              }
+              ////////////////////////////////////////////////////////////////////////////////////
+              ///////////////////////////  Strat Fully connected layer 2  ////////////////////////////
+              ////////////////////////////////////////////////////////////////////////////////////
+              for (i = 0; i < och3; i = i + 1){
+                for (m = 0; m < ich3; m = m + 1) {
+                  out3[i] = out3[i] + (fcmap[m]*weight_fc[i][m]);
+                }
+                out3[i] = out3[i] + bias_fc[i];
+                out3_relu[i] = relu(out3[i]);
+              }
   result_SW = Max_class(out3_relu[0],out3_relu[1],out3_relu[2],out3_relu[3],
   out3_relu[4],out3_relu[5],out3_relu[6],out3_relu[7],out3_relu[8],out3_relu[9]);
 
