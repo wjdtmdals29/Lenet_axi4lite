@@ -143,7 +143,7 @@ signed int out1[och1][ochsize1][ochsize1];
    int testnum_count = 0;
    double SW_stack_processing_time = 0;
    double FPGA_stack_processing_time = 0;
-   double FPGA_stack_senddata_time = 0;
+   //ouble FPGA_stack_senddata_time = 0;
    double SW_match_count = 0;
    double FPGA_match_count = 0;
    double ref_c_run_time = 0;
@@ -183,7 +183,7 @@ int main()
          ref_v_send_data_time = 0;
          SW_stack_processing_time = 0;
          FPGA_stack_processing_time = 0;
-         FPGA_stack_senddata_time = 0;
+         //FPGA_stack_senddata_time = 0;
 
         for(int image = 0; image < NUM_TESTIMAGE; image = image + 1){
             k = 0;
@@ -253,8 +253,6 @@ int main()
             for (p = 0; p < och1; p++) {
                for (m = 0; m < ksize; m++) {
                   for (n = 0; n < ksize; n++) {
-                    //weight1[i][p][m][n] = rand()%254 - 127;
-                     //weight_HW[w] = weight2[i][p][m][n];
                      weight1[i][p][m][n] = weight_conv1[weightcount];
                      weight_HW[w] = weight_conv1[weightcount];
                      weightcount = weightcount+1;
@@ -268,8 +266,6 @@ int main()
             for (p = 0; p < och2; p++) {
                for (m = 0; m < ksize; m++) {
                   for (n = 0; n < ksize; n++) {
-                     //weight2[i][p][m][n] = rand()%254 - 127;
-                     //weight_HW[w] = weight2[i][p][m][n];
                      weight2[i][p][m][n] = weight_conv2[weightcount];
                      weight_HW[w] = weight_conv2[weightcount];
                      weightcount = weightcount+1;
@@ -281,8 +277,6 @@ int main()
          weightcount = 0;
          for (i = 0; i < och3; i++) {
             for (p = 0; p < ich3; p++) {
-               //weight_fc[i][p] = rand()%254 - 127;
-               //weight_HW[w] = weight_fc[i][p];
                weight_fc[i][p] = weight_fclayer[weightcount];
                weight_HW[w] = weight_fclayer[weightcount];
                weightcount = weightcount+1;
@@ -301,93 +295,65 @@ int main()
           if((imagecount % 1000) == 0){
           Expected_result = Expected_result + 1;
           }
-      for (i = 0; i < ich1; i++) {
-         for (m = 0; m < ochsize1; m++) {
-            for (n = 0; n < ochsize1; n++) {
-               for (p = 0; p < ksize; p++) {
-                  for (q = 0; q < ksize; q++) {
-                     for (j = 0; j < och1; j++) {
-                        out1[j][m][n] = 0;
-                     }
-                  }
-               }
-            }
-         }
-      }
-      for (m = 0; m < ochsize1; m++) {
-         for (n = 0; n < ochsize1; n++) {
-            for (j = 0; j < och1; j++) {
-               out1_relu[j][m][n] = 0;
-            }
-         }
-      }
-      for (m = 0; m < ochsize1; m = m + 2) {
-         for (n = 0; n < ochsize1; n = n + 2) {
-            for (j = 0; j < och1; j++) {
-               out1_max[j][m / 2][n / 2] = 0;
-            }
-         }
-      }
-
-      for (i = 0; i < ich2; i++) {
-         for (m = 0; m < ochsize2; m++) {
-            for (n = 0; n < ochsize2; n++) {
-               for (p = 0; p < ksize; p++) {
-                  for (q = 0; q < ksize; q++) {
-                     for (j = 0; j < och2; j++) {
-                        out2[j][m][n] = 0;
-                     }
-                  }
-               }
-            }
-         }
-      }
-       for (j = 0; j < och2; j++) {
-          for (m = 0; m < ochsize2; m++) {
-             for (n = 0; n < ochsize2; n++) {
-                out2_relu[j][m][n] = 0;
-             }
-          }
-       }
+          for (m = 0; m < ochsize1; m++) {
+			      for (n = 0; n < ochsize1; n++) {
+						for (j = 0; j < och1; j++) {
+							out1[j][m][n] = 0;
+              out1_relu[j][m][n] = 0;
+			      }
+		      }
+	      }
+	      for (j = 0; j < och1; j++) {
+		      for (m = 0; m < ochsize1; m = m + 2) {
+		      	for (n = 0; n < ochsize1; n = n + 2) {
+		      		out1_max[j][m / 2][n / 2] = 0;
+              fmap2[j][m / 2][n / 2] = 0;
+			      }
+		      }
+	      }
+		      for (m = 0; m < ochsize2; m++) {
+			      for (n = 0; n < ochsize2; n++) {
+			      			for (j = 0; j < och2; j++) {
+			      				out2[j][m][n] = 0;
+                    out2_relu[j][m][n] = 0;
+			      }
+		      }
+	      }
         for (j = 0; j < och2; j++) {
-           for (m = 0; m < ochsize2; m = m + 2) {
-              for (n = 0; n < ochsize2; n = n + 2) {
-                 out2_max[j][m / 2][n / 2] = 0;
-              }
-           }
+	        for (m = 0; m < ochsize2; m = m + 2) {
+	      	  for (n = 0; n < ochsize2; n = n + 2) {
+	      		  out2_max[j][m / 2][n / 2] = 0;
+	      	  }
+	        }
         }
-      for (i = 0; i < och3; i = i + 1){
-          out3[i] = 0;
-      }
-      for (i = 0; i < och3; i = i + 1){
-           out3_relu[i] = 0;
-      }
-      result_SW = 0;
+        for (i = 0; i < och2; i = i + 1) {
+	      	for (m = 0; m < ichsize3; m = m + 1) {
+	      		for (n = 0; n < ichsize3; n = n + 1) {
+              fcmap[(i*ichsize3*ichsize3)+(m*ichsize3)+n] = 0;
+            }
+          }
+        }
+        for (i = 0; i < och3; i = i + 1){
+            out3[i] = 0;
+            bias_fc[i] = 0;
+            out3_relu[i] = 0;
+        }
+            result_SW = 0;
       
 /////////////////// LENET Run in PS /////////////////////////////
             //printf("============[SW] LENET Run in PS(SW) .=============\n");
             XTime_GetTime(&tStart);
-
-   /////////////////////  Convolution layer1  /////////////////////
-   
    for (i = 0; i < ich1; i++) {
       for (m = 0; m < ochsize1; m++) {
          for (n = 0; n < ochsize1; n++) {
             for (p = 0; p < ksize; p++) {
                for (q = 0; q < ksize; q++) {
                   for (j = 0; j < och1; j++) {
-                     out1[j][m][n] += (fmap1[imagecount][i][m + p][n + q] * weight1[i][j][p][q]);
+                     out1[j][m][n] += (fmap1[imagecount][i][m + p][n + q] * weight1[i][j][p][q]); //Convolution
+                     out1_relu[j][m][n] = relu(out1[j][m][n]); //Relu function
                   }
                }
             }
-         }
-      }
-   }
-   /////////////////////  relu function  /////////////////////
-   for (j = 0; j < och1; j++) {
-      for (m = 0; m < ochsize1; m++) {
-         for (n = 0; n < ochsize1; n++) {
-            out1_relu[j][m][n] = relu(out1[j][m][n]);
          }
       }
    }
@@ -395,20 +361,12 @@ int main()
    for (j = 0; j < och1; j++) {
       for (m = 0; m < ochsize1; m = m + 2) {
          for (n = 0; n < ochsize1; n = n + 2) {
+          //maxpool
             out1_max[j][m / 2][n / 2] = Max(out1_relu[j][m][n], out1_relu[j][m][n + 1], out1_relu[j][m + 1][n], out1_relu[j][m + 1][n + 1]);
+            fmap2[i][m][n] = out1_max[j][m / 2][n / 2];
          }
       }
    }
-  for (i = 0; i < ich2; i = i + 1) {
-      for (m = 0; m < ichsize2; m = m + 1) {
-         for (n = 0; n < ichsize2; n = n + 1) {
-        for(b = 0; b < 3; b = b + 1) {
-          out1_max[i][m][n] = out1_max[i][m][n] - (out1_max[i][m][n]*0.5);
-        }
-        fmap2[i][m][n] = out1_max[i][m][n];
-      }
-    }
-  }
    ////////////////////////////////////////////////////////////////////////////////////
    ///////////////////////////  Strat convolution layer 2  ////////////////////////////
    ////////////////////////////////////////////////////////////////////////////////////
@@ -418,53 +376,48 @@ int main()
             for (p = 0; p < ksize; p++) {
                for (q = 0; q < ksize; q++) {
                   for (j = 0; j < och2; j++) {
-                     out2[j][m][n] += (fmap2[i][m + p][n + q] * weight2[i][j][p][q]);
+                     out2[j][m][n] += (fmap2[i][m + p][n + q] * weight2[i][j][p][q]); //Convolution
+                     out2_relu[j][m][n] = relu(out2[j][m][n]); //Relu function
                   }
                }
             }
          }
       }
    }
-   /////////////////////  relu function  /////////////////////
-  for (j = 0; j < och2; j++) {
-     for (m = 0; m < ochsize2; m++) {
-        for (n = 0; n < ochsize2; n++) {
-           out2_relu[j][m][n] = relu(out2[j][m][n]);
-        }
-     }
-  }
    /////////////////////  maxpooler  /////////////////////
   for (j = 0; j < och2; j++) {
      for (m = 0; m < ochsize2; m = m + 2) {
         for (n = 0; n < ochsize2; n = n + 2) {
            out2_max[j][m / 2][n / 2] = Max(out2_relu[j][m][n], out2_relu[j][m][n + 1], out2_relu[j][m + 1][n], out2_relu[j][m + 1][n + 1]);
+        //truncate **I don't resolve this problem. If i don't truncate 3bits, then the result return error value** Please solve this
+          for(b = 0; b < 3; b = b + 1) {
+            out2_max[j][m / 2][n / 2] = out2_max[j][m / 2][n / 2] - (out2_max[j][m / 2][n / 2]*0.5);
+          }
+        /////////////
+          fcmap[(j*ichsize3*ichsize3)+((m / 2)*ichsize3)+(n / 2)] = out2_max[j][m / 2][n / 2];
+          }
         }
      }
-  }
-  for (i = 0; i < och2; i = i + 1) {
-      for (m = 0; m < ichsize3; m = m + 1) {
-         for (n = 0; n < ichsize3; n = n + 1) {
-        fcmap[(i*ichsize3*ichsize3)+(m*ichsize3)+n] = out2_max[i][m][n];
-      }
-    }
-  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+   ///////////////////////////  Strat Fully Connected layer  ////////////////////////////
+   ////////////////////////////////////////////////////////////////////////////////////
   for (i = 0; i < och3; i = i + 1){
     for (m = 0; m < ich3; m = m + 1) {
       out3[i] = out3[i] + (fcmap[m]*weight_fc[i][m]);
     }
     out3[i] = out3[i] + bias_fc[i];
-  }
-  for (i = 0; i < och3; i = i + 1){
     out3_relu[i] = relu(out3[i]);
   }
   result_SW = Max_class(out3_relu[0],out3_relu[1],out3_relu[2],out3_relu[3],
   out3_relu[4],out3_relu[5],out3_relu[6],out3_relu[7],out3_relu[8],out3_relu[9]);
 
-
             XTime_GetTime(&tEnd);
             ref_c_run_time = 1.0 * (tEnd - tStart) / (COUNTS_PER_SECOND/1000000);
             SW_stack_processing_time = SW_stack_processing_time + ref_c_run_time;
-/////////////////// LENET Run in PL /////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////        
+////////////////////////////// LENET Run in PL /////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
             //printf("============[FPGA] LENET Run in PL .=============\n");
             //XTime_GetTime(&tStart);
             Xil_Out32 ((XPAR_TOP_LENET_AXI4LITE_0_BASEADDR + LENET_RESET_ADDR), 0x00000000); // 
@@ -502,7 +455,9 @@ int main()
             printf("[%d Image Done] [SW]Accuracy =  %.2f%%  [FPGA]Accuracy =  %.2f%%\n",imagecount,
                    (SW_match_count/(imagecount+1))*100, (FPGA_match_count/(imagecount+1))*100);
             imagecount = imagecount+1;
+
          }
+
          printf("[SW] Match Count = %.f    [FPGA] Match count = %.f\n",SW_match_count,FPGA_match_count);
          printf("[SW] Accuracy = %.2f%%    ", (SW_match_count/NUM_TESTIMAGE)*100);
          printf("[FPGA] Accuracy = %.2f%%\n", (FPGA_match_count/NUM_TESTIMAGE)*100);
