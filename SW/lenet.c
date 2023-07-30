@@ -89,26 +89,29 @@ int relu(int x)
 	return 0;
 }
   /// global variable to prevent stack overflow ///
-  signed int out1[och1][ochsize1][ochsize1];
-	signed int out1_relu[och1][ochsize1][ochsize1];
-	signed int out1_max[och1][(ochsize1) / 2][(ochsize1) / 2];
+  int out1[och1][ochsize1][ochsize1];
+	int out1_relu[och1][ochsize1][ochsize1];
+	int out1_max[och1][(ochsize1) / 2][(ochsize1) / 2];
 
-	signed int out2[och2][ochsize2][ochsize2];
-	signed int out2_relu[och2][ochsize2][ochsize2];
-	signed int out2_max[och2][(ochsize2) / 2][(ochsize2) / 2];
-  signed int fmap1[TestImage][ich1][ichsize1][ichsize1];
-  signed int fmap2[ich2][ichsize2][ichsize2];
-  signed int weight1[ich1][och1][ksize][ksize];
-  signed int weight1_HW[ich1][och1][ksize][ksize];
-  signed int weight2[ich2][och2][ksize][ksize];
-  signed int weight2_HW[ich2][och2][ksize][ksize];
-  signed int fcmap[ich3];
-  signed int weight_fc[och3][ich3];
-  signed int weight_fc_HW[och3][ich3];
-  signed int bias_fc[och3];
-  signed int bias_fc_HW[och3];
-  signed int out3[och3];
-  signed int out3_relu[och3];
+  int fmap2[ich2][ichsize2][ichsize2];
+	int out2[och2][ochsize2][ochsize2];
+	int out2_relu[och2][ochsize2][ochsize2];
+	int out2_max[och2][(ochsize2) / 2][(ochsize2) / 2];
+
+  int fcmap[ich3];
+  int out3[och3];
+  int out3_relu[och3];
+
+  int fmap1[TestImage][ich1][ichsize1][ichsize1];
+  int weight1[ich1][och1][ksize][ksize];
+  int weight1_HW[ich1][och1][ksize][ksize];
+  int weight2[ich2][och2][ksize][ksize];
+  int weight2_HW[ich2][och2][ksize][ksize];
+  
+  int weight_fc[och3][ich3];
+  int weight_fc_HW[och3][ich3];
+  int bias_fc[och3];
+  int bias_fc_HW[och3];
   int Actual_result = 0;
   int Expected_result = -1;
   double count_match = 0;
@@ -116,7 +119,7 @@ int relu(int x)
 
 int main()
 { 
-	signed int testimagenum, i, m, n, p, q, j, b;
+	int testimagenum, i, m, n, p, q, j, b;
   int count_img = 0;
   FILE *fp_fmap;
   FILE *fp_weight1;
@@ -128,7 +131,6 @@ int main()
   FILE *fp_weight_fc;
   FILE *fp_bias_fc;
   srand(time(NULL));
-  signed int random;
   
   Actual_result = 0;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,13 +193,7 @@ fp_weight2 = fopen("SW_conv2_weight.txt", "r");
 			for (n = 0; n < ochsize1; n++) {
 						for (j = 0; j < och1; j++) {
 							out1[j][m][n] = 0;
-			}
-		}
-	}
-	for (j = 0; j < och1; j++) {
-		for (m = 0; m < ochsize1; m++) {
-			for (n = 0; n < ochsize1; n++) {
-				out1_relu[j][m][n] = 0;
+              out1_relu[j][m][n] = 0;
 			}
 		}
 	}
@@ -205,30 +201,18 @@ fp_weight2 = fopen("SW_conv2_weight.txt", "r");
 		for (m = 0; m < ochsize1; m = m + 2) {
 			for (n = 0; n < ochsize1; n = n + 2) {
 				out1_max[j][m / 2][n / 2] = 0;
+        fmap2[j][m / 2][n / 2] = 0;
 			}
 		}
 	}
-  for (i = 0; i < ich2; i = i + 1) {
-		for (m = 0; m < ichsize2; m = m + 1) {
-			for (n = 0; n < ichsize2; n = n + 1) {
-        fmap2[i][m][n] = 0;
-      }
-    }
-  }
 		for (m = 0; m < ochsize2; m++) {
 			for (n = 0; n < ochsize2; n++) {
 						for (j = 0; j < och2; j++) {
 							out2[j][m][n] = 0;
+              out2_relu[j][m][n] = 0;
 			}
 		}
 	}
-  for (j = 0; j < och2; j++) {
-	  for (m = 0; m < ochsize2; m++) {
-		  for (n = 0; n < ochsize2; n++) {
-			  out2_relu[j][m][n] = 0;
-		  }
-	  }
-  }
   for (j = 0; j < och2; j++) {
 	  for (m = 0; m < ochsize2; m = m + 2) {
 		  for (n = 0; n < ochsize2; n = n + 2) {
@@ -246,61 +230,39 @@ fp_weight2 = fopen("SW_conv2_weight.txt", "r");
   for (i = 0; i < och3; i = i + 1){
       out3[i] = 0;
       bias_fc[i] = 0;
-  }
-  for (i = 0; i < och3; i = i + 1){
-    out3_relu[i] = 0;
+      out3_relu[i] = 0;
   }
 
-  /////////////////////if 0<=count_img <100, Expected result = 0/////////////////////
-  /////////////////////if 700<=count_img <800, Expected result = 7/////////////////////
     if((count_img % 1000) == 0){
     Expected_result = Expected_result + 1;
   }
-	for (i = 0; i < ich1; i++) {
-		for (m = 0; m < ochsize1; m++) {
-			for (n = 0; n < ochsize1; n++) {
-				for (p = 0; p < ksize; p++) {
-					for (q = 0; q < ksize; q++) {
-						for (j = 0; j < och1; j++) {
-							out1[j][m][n] += (fmap1[count_img][i][m + p][n + q] * weight1[i][j][p][q]);
-						}
-					}
-				}
-			}
-		}
-	}
-	for (j = 0; j < och1; j++) {
-		for (m = 0; m < ochsize1; m++) {
-			for (n = 0; n < ochsize1; n++) {
-			}
-		}
-	}
-	for (j = 0; j < och1; j++) {
-		for (m = 0; m < ochsize1; m++) {
-			for (n = 0; n < ochsize1; n++) {
-				out1_relu[j][m][n] = relu(out1[j][m][n]);
-			}
-		}
-	}
+  for (p = 0; p < ksize; p++) {
+		for (q = 0; q < ksize; q++) {
+	    for (i = 0; i < ich1; i++) {
+	    	for (m = 0; m < ochsize1; m++) {
+	    		for (n = 0; n < ochsize1; n++) {
+	    					for (j = 0; j < och1; j++) {
+							    out1[j][m][n] += (fmap1[count_img][i][m + p][n + q] * weight1[i][j][p][q]);
+                  out1_relu[j][m][n] = relu(out1[j][m][n]);
+						    }
+					    }
+				    }
+			    }
+		    }
+	    }
 	/////////////////////  maxpooler  /////////////////////
 	for (j = 0; j < och1; j++) {
 		for (m = 0; m < ochsize1; m = m + 2) {
 			for (n = 0; n < ochsize1; n = n + 2) {
 				out1_max[j][m / 2][n / 2] = Max(out1_relu[j][m][n], out1_relu[j][m][n + 1], out1_relu[j][m + 1][n], out1_relu[j][m + 1][n + 1]);
-			}
+        //truncating 3bits in Convlayer1 or Convlayer2 is essential. I can't understand this issue. In this case, i did it in conv layer2
+        //for(b = 0; b < 3; b = b + 1) {
+        //  out1_max[j][m / 2][n / 2] = out1_max[j][m / 2][n / 2] - (out1_max[j][m / 2][n / 2]*0.5); //truncate
+        //}
+        fmap2[j][m / 2][n / 2] = out1_max[j][m / 2][n / 2];
+      }
 		}
 	}
-  for (i = 0; i < ich2; i = i + 1) {
-		for (m = 0; m < ichsize2; m = m + 1) {
-			for (n = 0; n < ichsize2; n = n + 1) {
-        ///////////////////// truncate bit /////////////////////
-        for(b = 0; b < 3; b = b + 1) {
-          out1_max[i][m][n] = out1_max[i][m][n] - (out1_max[i][m][n]*0.5);
-        }
-        fmap2[i][m][n] = out1_max[i][m][n];
-      }
-    }
-  }
 	////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////  Strat convolution layer 2  ////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////
@@ -311,57 +273,33 @@ fp_weight2 = fopen("SW_conv2_weight.txt", "r");
 					for (q = 0; q < ksize; q++) {
 						for (j = 0; j < och2; j++) {
 							out2[j][m][n] += (fmap2[i][m + p][n + q] * weight2[i][j][p][q]);
+              out2_relu[j][m][n] = relu(out2[j][m][n]);
 						}
 					}
 				}
 			}
 		}
 	}
-	for (j = 0; j < och2; j++) {
-		for (m = 0; m < ochsize2; m++) {
-			for (n = 0; n < ochsize2; n++) {
-			}
-		}
-	}
-	/////////////////////  relu function  /////////////////////
-  for (j = 0; j < och2; j++) {
-	  for (m = 0; m < ochsize2; m++) {
-		  for (n = 0; n < ochsize2; n++) {
-			  out2_relu[j][m][n] = relu(out2[j][m][n]);
-		  }
-	  }
-  }
 	/////////////////////  maxpooler  /////////////////////
   for (j = 0; j < och2; j++) {
 	  for (m = 0; m < ochsize2; m = m + 2) {
 		  for (n = 0; n < ochsize2; n = n + 2) {
 			  out2_max[j][m / 2][n / 2] = Max(out2_relu[j][m][n], out2_relu[j][m][n + 1], out2_relu[j][m + 1][n], out2_relu[j][m + 1][n + 1]);
-		  }
+        //truncate **I don't resolve this problem. If i don't truncate 3bits, then the result return error value** Please solve this
+        for(b = 0; b < 3; b = b + 1) {
+          out2_max[j][m / 2][n / 2] = out2_max[j][m / 2][n / 2] - (out2_max[j][m / 2][n / 2]*0.5);
+        }
+        /////////////
+        fcmap[(j*ichsize3*ichsize3)+((m / 2)*ichsize3)+(n / 2)] = out2_max[j][m / 2][n / 2];
+      }
 	  }
   }
-  for (i = 0; i < och2; i = i + 1) {
-		for (m = 0; m < ichsize3; m = m + 1) {
-			for (n = 0; n < ichsize3; n = n + 1) {
-        ///////////////////// truncate bit /////////////////////
-        //for(b = 0; b < 3; b = b + 1) {
-          //out2_max[i][m][n] = out2_max[i][m][n] - (out2_max[i][m][n]*0.5);
-        //}
-        fcmap[(i*ichsize3*ichsize3)+(m*ichsize3)+n] = out2_max[i][m][n];
-      }
-    }
-  }
-  for (i = 0; i < och3; i = i + 1){
+for (i = 0; i < och3; i = i + 1){
     for (m = 0; m < ich3; m = m + 1) {
       out3[i] = out3[i] + (fcmap[m]*weight_fc[i][m]);
     }
     out3[i] = out3[i] + bias_fc[i];
-  }
-  for (i = 0; i < och3; i = i + 1){
     out3_relu[i] = relu(out3[i]);
-    ///////////////////// truncate bit /////////////////////
-        //for(b = 0; b < 3; b = b + 1) {
-          //out3_relu[i] = out3_relu[i] - (out3_relu[i]*0.5);
-        //}
   }
   Actual_result = Max_class(out3_relu[0],out3_relu[1],out3_relu[2],out3_relu[3],out3_relu[4],out3_relu[5],out3_relu[6],out3_relu[7],out3_relu[8],out3_relu[9]);
   //////////////Compare(Actual result vs SW result)//////////////
@@ -370,8 +308,8 @@ fp_weight2 = fopen("SW_conv2_weight.txt", "r");
   }
   else if(Actual_result != Expected_result){
     count_mismatch = count_mismatch + 1;
-    printf("[%d]Mismatch!! Expected result = %d, Actual result = %d\n",count_img,Expected_result, Actual_result);
   }
+  printf("[%d]Expected result = %d, Actual result = %d, Accuracy = %.2f%%\n",count_img,Expected_result, Actual_result, (count_match/(count_img + 1))*100);
   count_img = count_img + 1;
   }
   if((count_match + count_mismatch) != TestImage){
