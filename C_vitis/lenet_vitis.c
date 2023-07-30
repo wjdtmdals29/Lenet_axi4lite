@@ -399,6 +399,8 @@ int main()
          }
       }
    }
+            //truncating bits. If don't truncate bits, then the final result values are mismatch. I can't solve this problem.
+            //Must truncate one of layer output bits. (out of Convlayer1 or out of Convlayer2). And in case i did it in Convlayer1
   for (i = 0; i < ich2; i = i + 1) {
       for (m = 0; m < ichsize2; m = m + 1) {
          for (n = 0; n < ichsize2; n = n + 1) {
@@ -444,9 +446,6 @@ int main()
   for (i = 0; i < och2; i = i + 1) {
       for (m = 0; m < ichsize3; m = m + 1) {
          for (n = 0; n < ichsize3; n = n + 1) {
-        //for(b = 0; b < bwtrunc2; b = b + 1) {
-        //  out2_max[i][m][n] = out2_max[i][m][n] - (out2_max[i][m][n]*0.5);
-        //}
         fcmap[(i*ichsize3*ichsize3)+(m*ichsize3)+n] = out2_max[i][m][n];
       }
     }
@@ -459,9 +458,6 @@ int main()
   }
   for (i = 0; i < och3; i = i + 1){
     out3_relu[i] = relu(out3[i]);
-    //for(b = 0; b < bwtruncfc; b = b + 1) {
-    //      out3_relu[i] = out3_relu[i] - (out3_relu[i]*0.5);
-    //    }
   }
   result_SW = Max_class(out3_relu[0],out3_relu[1],out3_relu[2],out3_relu[3],
   out3_relu[4],out3_relu[5],out3_relu[6],out3_relu[7],out3_relu[8],out3_relu[9]);
