@@ -171,7 +171,7 @@ initial begin
     cnt_bias = cnt_bias + 1;
     end
     $fclose(file3);
-    file5=$fopen("test_num_0to9_400.mem","r");
+    file5=$fopen("test_num_0to9.mem","r");
     while (cnt_fmap<784*test_image) begin
     file6=$fscanf(file5,"%h",fmap[cnt_fmap]);
     cnt_fmap = cnt_fmap + 1;
