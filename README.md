@@ -66,7 +66,6 @@ Check the results of entering one data in order from the numbers 0 to 9.
 2. TCL console
 
 ![image](https://github.com/wjdtmdals29/Lenet_axi4lite/assets/109125304/0ae38478-2d52-4e87-856b-40f1c8539d40)
-
 ****If want to see more detail, try simulation and check 'WRITE address & data', 'READ address & data(inference result)'.
 
 # S/W Algorithm test 
